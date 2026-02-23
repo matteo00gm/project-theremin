@@ -6,15 +6,19 @@ import (
 	"log"
 	"time"
 
+	"action-service/internal/action"
 	pb "action-service/pb"
 )
 
 type GazeServer struct {
 	pb.UnimplementedEyeTrackerServer
+	Mouse *action.MouseController
 }
 
 func NewGazeServer() *GazeServer {
-	return &GazeServer{}
+	return &GazeServer{
+		Mouse: action.NewMouseController(),
+	}
 }
 
 // StreamCoordinates is the function the vision service calls to start streaming data
@@ -44,5 +48,7 @@ func (s *GazeServer) StreamCoordinates(stream pb.EyeTracker_StreamCoordinatesSer
 		fmt.Printf("Received -> X: %.4f, Y: %.4f | Conf: %.2f | Latency: %dms\n",
 			point.X, point.Y, point.Confidence, latency)
 
+		// Move the OS mouse cursor
+		s.Mouse.MoveCursor(point.X, point.Y)
 	}
 }

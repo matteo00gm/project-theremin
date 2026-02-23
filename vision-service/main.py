@@ -31,14 +31,17 @@ def main():
 
         if gaze_data:
             # For mouse control, we'll just stream the Left eye coordinates
-            lx, ly = gaze_data['left']
+            raw_lx, ly = gaze_data['left']
             
+            # camera mirror effect (invert x axys)
+            lx = 1.0 - raw_lx
+
             # 2. Stream data
             streamer.send_point(x=lx, y=ly, confidence=gaze_data['confidence'])
 
             # 3. Draw UI (for local debugging)
             h, w, _ = image.shape
-            cv2.circle(image, (int(lx * w), int(ly * h)), 4, (0, 255, 0), -1)
+            cv2.circle(image, (int(raw_lx * w), int(ly * h)), 4, (0, 255, 0), -1)
             cv2.circle(image, (int(gaze_data['right'][0] * w), int(gaze_data['right'][1] * h)), 4, (0, 255, 0), -1)
 
         cv2.imshow('Eye Tracker Sensor', cv2.flip(image, 1))
