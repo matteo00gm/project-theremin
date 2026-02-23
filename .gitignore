@@ -5,8 +5,8 @@ venv/
 __pycache__/
 nosetests.xml
 coverage.xml
-vision-service/face_landmarker.task
+movement-service/face_landmarker.task
 
 # --- Generated Files ---
-vision-service/pb
+movement-service/pb
 action-service/pb

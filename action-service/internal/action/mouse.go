@@ -10,6 +10,9 @@ import (
 type MouseController struct {
 	ScreenWidth  int
 	ScreenHeight int
+	LastX        float32
+	LastY        float32
+	Smoothing    float32
 }
 
 // NewMouseController initializes the controller with the primary display dimensions.
@@ -20,13 +23,23 @@ func NewMouseController() *MouseController {
 	return &MouseController{
 		ScreenWidth:  width,
 		ScreenHeight: height,
+		Smoothing:    0.40, // Lower = smoother, Higher = faster
 	}
 }
 
-// MoveCursor translates normalized coordinates (0.0 to 1.0) into absolute screen pixels.
-func (m *MouseController) MoveCursor(x, y float32) {
-	pixelX := int(x * float32(m.ScreenWidth))
-	pixelY := int(y * float32(m.ScreenHeight))
+// MoveCursor applies exponential smoothing and moves the OS cursor.
+func (m *MouseController) MoveCursor(targetX, targetY float32) {
+	// Formula: Current = Previous + (Target - Previous) * Smoothing
+	// This prevents the mouse from 'teleporting' and makes it 'glide'
+	smoothX := m.LastX + (targetX-m.LastX)*m.Smoothing
+	smoothY := m.LastY + (targetY-m.LastY)*m.Smoothing
+
+	// Store for next frame
+	m.LastX = smoothX
+	m.LastY = smoothY
+
+	pixelX := int(smoothX * float32(m.ScreenWidth))
+	pixelY := int(smoothY * float32(m.ScreenHeight))
 
 	robotgo.Move(pixelX, pixelY)
 }
