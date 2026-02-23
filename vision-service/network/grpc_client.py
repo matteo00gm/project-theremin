@@ -47,11 +47,12 @@ class GazeStreamer:
         if not self.is_streaming:
             return
         try:
-            timestamp_ms = int(time.time() * 1000)
-            # non-blocking put: if the network is slow, we drop frames instead of freezing the UI
+            # nanosecond integer math to avoid float rounding errors
+            timestamp_ms = time.time_ns() // 1_000_000
+            
             self.queue.put_nowait((x, y, confidence, timestamp_ms))
         except queue.Full:
-            pass 
+            pass
 
     def _generate_messages(self):
         """Yields messages from the queue to the gRPC stream."""
