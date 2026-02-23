@@ -1,0 +1,8 @@
+todo.md
+
+# --- Python ---
+venv/
+__pycache__/
+nosetests.xml
+coverage.xml
+vision-service/face_landmarker.task

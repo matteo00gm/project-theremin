@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+// This defines the package name for the generated Go code
+option go_package = "action-service/pb";
+
+package gazecontrol;
+
+// gRPC Service definition
+service EyeTracker {
+  // Client-side streaming: the vision service pushes coordinates to the action service, which will just ack the stream.
+  rpc StreamCoordinates (stream GazePoint) returns (StreamStatus) {}
+}
+
+// data sent for every frame (30-60 times per second)
+message GazePoint {
+  // Normalized coordinates (0.0 to 1.0). the action service will handle the screen resolution
+  float x = 1;
+  float y = 2;
+  
+  // Confidence score from the ML model (0.0 to 1.0). Used to ignore blinks
+  float confidence = 3;
+  
+  // Unix timestamp in milliseconds. Used for calculating end-to-end system latency.
+  int64 timestamp = 4;
+}
+
+// response for when stream closes
+message StreamStatus {
+  bool success = 1;
+  string message = 2;
+}
