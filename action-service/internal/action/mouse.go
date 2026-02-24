@@ -20,7 +20,21 @@ type MouseController struct {
 // NewMouseController initializes the controller with the primary display dimensions.
 func NewMouseController() *MouseController {
 	width, height := robotgo.GetScreenSize()
-	log.Printf("Screen dimensions detected: %dx%d", width, height)
+	log.Printf("OS initially reported screen dimensions: %dx%d", width, height)
+
+	// Override width from .env if present
+	if envWidth := os.Getenv("SCREEN_WIDTH"); envWidth != "" {
+		if w, err := strconv.Atoi(envWidth); err == nil {
+			width = w
+		}
+	}
+
+	// Override height from .env if present
+	if envHeight := os.Getenv("SCREEN_HEIGHT"); envHeight != "" {
+		if h, err := strconv.Atoi(envHeight); err == nil {
+			height = h
+		}
+	}
 
 	// Default smoothing value
 	smoothing := float32(0.30)

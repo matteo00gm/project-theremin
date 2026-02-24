@@ -30,7 +30,16 @@ git clone https://github.com/matteo00gm/project-theremin.git
 cd project-theremin
 ```
 
-### Step 2: Initialize Dependencies
+### Step 2: Configure Environment Variables
+
+Edit the `.env` file in the root directory to define your screen dimensions. It is critical to set these precisely to ensure accurate hand-tracking conversion.
+
+```env
+SCREEN_WIDTH=1920
+SCREEN_HEIGHT=1080
+```
+
+### Step 3: Initialize Dependencies
 
 Execute the initialization sequence which automatically creates Python virtual environments, installs dependencies from `requirements.txt`, and initializes Go modules.
 
@@ -38,7 +47,7 @@ Execute the initialization sequence which automatically creates Python virtual e
 make init
 ```
 
-### Step 3: Generate gRPC Network Code
+### Step 4: Generate gRPC Network Code
 
 Generate the essential gRPC network code for all three microservices to strictly establish inter-service communication protocols.
 
